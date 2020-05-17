@@ -57,7 +57,7 @@ class Board
           @squares[target_square] = "*#{@player1.marker}*".cyan
         end
         display
-        puts "#{@player1.name} wins!"
+        puts "#{@player1.name} wins!".cyan
         puts
         return true
       elsif v.all?(" #{@player2.marker} ")
@@ -66,7 +66,7 @@ class Board
           @squares[target_square] = "*#{@player2.marker}*".red
         end
         display
-        puts "#{@player2.name} wins!"
+        puts "#{@player2.name} wins!".red
         puts
         return true
       end

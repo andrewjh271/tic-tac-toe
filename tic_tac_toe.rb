@@ -12,8 +12,8 @@ end
 if choice == 'c'
   print "Enter the Computer's name: "
   name1 = gets.chomp
-  print "Enter #{name1}'s mark (e.g. X): "
-  mark1 = gets.chomp.chr
+  print "Enter #{name1}'s marker (e.g. X): "
+  marker1 = gets.chomp.chr
   print "Choose the Computer's difficulty level (Easy / Medium / Difficult): "
   level = gets.chomp.chr.downcase
   until level == 'e' || level == 'm' || level == 'd'
@@ -23,18 +23,18 @@ if choice == 'c'
   end
   case level
   when 'e'
-    player1 = Computer.new(name1, mark1, 'easy')
+    player1 = Computer.new(name1, marker1, 'easy')
   when 'm'
-    player1 = Computer.new(name1, mark1, 'medium')
+    player1 = Computer.new(name1, marker1, 'medium')
   when 'd'
-    player1 = Computer.new(name1, mark1, 'difficult')
+    player1 = Computer.new(name1, marker1, 'difficult')
   end
 else
   print "Enter Player 1's name: "
   name1 = gets.chomp
-  print "Enter #{name1}'s' mark (e.g., X): "
-  mark1 = gets.chomp.chr 
-  player1 = Human.new(name1, mark1)
+  print "Enter #{name1}'s' marker (e.g., X): "
+  marker1 = gets.chomp.chr 
+  player1 = Human.new(name1, marker1)
 end
 
 print "Is Player 2 a Human or Computer? "
@@ -52,12 +52,12 @@ if choice == 'c'
     print "Enter the Computer's name: "
     name2 = gets.chomp
   end
-  print "Enter #{name2}'s mark (e.g., 0): "
-  mark2 = gets.chomp.chr
-  while mark2 == mark1
-    puts "Can't choose the same mark!"
-    print "Enter #{name2}'s mark: "
-    mark2 = gets.chomp.chr
+  print "Enter #{name2}'s marker (e.g., 0): "
+  marker2 = gets.chomp.chr
+  while marker2 == marker1
+    puts "#{marker1} has already been chosen!"
+    print "Enter #{name2}'s marker: "
+    marker2 = gets.chomp.chr
   end
   print "Choose the Computer's difficulty level (Easy / Medium / Difficult): "
   level = gets.chomp.chr.downcase
@@ -68,11 +68,11 @@ if choice == 'c'
   end
   case level
   when 'e'
-    player2 = Computer.new(name2, mark2, 'easy')
+    player2 = Computer.new(name2, marker2, 'easy')
   when 'm'
-    player2 = Computer.new(name2, mark2, 'medium')
+    player2 = Computer.new(name2, marker2, 'medium')
   when 'd'
-    player2 = Computer.new(name2, mark2, 'difficult')
+    player2 = Computer.new(name2, marker2, 'difficult')
   end
 else
   print "Enter Player 2's name: "
@@ -82,14 +82,14 @@ else
     print "Enter Player 2's name: "
     name2 = gets.chomp
   end
-  print "Enter #{name2}'s' mark (e.g., 0): "
-  mark2 = gets.chomp.chr 
-  while mark2 == mark1
-    puts "Can't choose the same mark!"
-    print "Enter #{name2}'s mark: "
-    mark2 = gets.chomp.chr
+  print "Enter #{name2}'s' marker (e.g., 0): "
+  marker2 = gets.chomp.chr 
+  while marker2 == marker1
+    puts "#{marker1} has already been chosen!"
+    print "Enter #{name2}'s marker: "
+    marker2 = gets.chomp.chr
   end
-  player2 = Human.new(name2, mark2)
+  player2 = Human.new(name2, marker2)
 end
 
 # useful for testing...
