@@ -6,6 +6,17 @@ class Board
     end
     @player1 = player1
     @player2 = player2
+    @winning_lines = {
+      # indexes for @square
+      row1: [0, 1, 2],
+      row2: [3, 4, 5],
+      row3: [6, 7, 8],
+      columnA: [0, 3, 6],
+      columnB: [1, 4, 7],
+      columnC: [2, 5, 8],
+      diag1: [0, 4, 8],
+      diag2: [2, 4, 6]
+    }
   end
 
   def display
@@ -49,22 +60,15 @@ class Board
   end
 
   def check_for_win
-    update_values
     @winning_lines.each_value do |v|
-      if v.all?(@player1.marker)
-        v.each do |cell|
-          target_square = @squares.find_index { |square| square.equal?(cell) }
-          @squares[target_square] = @player1.marker.cyan
-        end
+      if v.all? { |index| @squares[index] == @player1.marker }
+        v.each { |index| @squares[index] = @player1.marker.cyan }
         display
         puts "#{@player1.name} wins!".cyan
         puts
         return true
-      elsif v.all?(@player2.marker)
-        v.each do |cell|
-          target_square = @squares.find_index { |square| square.equal?(cell) }
-          @squares[target_square] = @player2.marker.red
-        end
+      elsif v.all? { |index| @squares[index] == @player2.marker }
+        v.each { |index| @squares[index] = @player2.marker.red }
         display
         puts "#{@player2.name} wins!".red
         puts
@@ -75,45 +79,28 @@ class Board
   end
 
   def one_away_offense(player)
-    update_values
     friendly_marker = (player == @player1) ? @player1.marker : @player2.marker
     @winning_lines.each_value do |v|
-      num = 0
-      v.each do |square|
-        num += 1 if square == friendly_marker
-      end
-      if num == 2
-        empty_square = v.find_index { |square| square == " "}
-        if empty_square
-          target_index = @squares.find_index { |square| v[empty_square].equal?(square) }
-          return target_index
-        end
+      if v.count { |index| @squares[index] == friendly_marker } == 2
+        empty_index = v.find { |index| @squares[index] == " "}
+        return empty_index if empty_index
       end
     end
     -1
   end
 
   def one_away_defense(player)
-    update_values
     opposing_marker = (player == @player1) ? @player2.marker : @player1.marker
     @winning_lines.each_value do |v|
-      num = 0
-      v.each do |square|
-        num += 1 if square == opposing_marker
-      end
-      if num == 2
-        empty_square = v.find_index { |square| square == " "}
-        if empty_square
-          target_index = @squares.find_index { |square| v[empty_square].equal?(square) }
-          return target_index
-        end
+      if v.count { |index| @squares[index] == opposing_marker } == 2
+        empty_index = v.find { |index| @squares[index] == " "}
+        return empty_index if empty_index
       end
     end
     -1
   end
 
   def best_squares(player)
-    update_values
     friendly_marker = (player == @player1) ? @player1.marker : @player2.marker
     opposing_marker = (player == @player1) ? @player2.marker : @player1.marker
     corners = [0, 2, 6, 8]
@@ -140,39 +127,36 @@ class Board
       end
     end
     @winning_lines.each_value do |v|
-      if v[0] == friendly_marker &&
-        v[1] == " " &&
-        v[2] == " "
-        target_square = v[2]
-        target_index = @squares.find_index { |square| square.equal?(target_square) }
-        return target_index
-      elsif v[0] == " " &&
-        v[1] == " " &&
-        v[2] == friendly_marker
-        target_square = v[0]
-        target_index = @squares.find_index { |square| square.equal?(target_square) }
-        return target_index
+      if @squares[v[0]] == friendly_marker &&
+        @squares[v[1]] == " " &&
+        @squares[v[2]] == " "
+        return v[2]
+      elsif @squares[v[0]] == " " &&
+        @squares[v[1]] == " " &&
+        @squares[v[2]] == friendly_marker
+        return v[0]
       end
     end
-    empty_corner = corners.find { |i| @squares[i] == " " }
-    return empty_corner if empty_corner
+    empty_corners = corners.select { |i| @squares[i] == " " }
+    return empty_corners[rand(empty_corners.length)] unless empty_corners.empty?
     -1
   end
 
   private
 
-  def update_values
-    @winning_lines = {
-      row1: [@squares[0], @squares[1], @squares[2]],
-      row2: [@squares[3], @squares[4], @squares[5]],
-      row3: [@squares[6], @squares[7], @squares[8]],
-      columnA: [@squares[0], @squares[3], @squares[6]],
-      columnB: [@squares[1], @squares[4], @squares[7]],
-      columnC: [@squares[2], @squares[5], @squares[8]],
-      diag1: [@squares[0], @squares[4], @squares[8]],
-      diag2: [@squares[2], @squares[4], @squares[6]]
-    }
-  end
+  # def update_values
+  #   @winning_lines = {
+  #     # indexes for @square
+  #     row1: [0, 1, 2],
+  #     row2: [3, 4, 5],
+  #     row3: [6, 7, 8],
+  #     columnA: [0, 3, 6],
+  #     columnB: [1, 4, 7],
+  #     columnC: [2, 5, 8],
+  #     diag1: [0, 4, 8],
+  #     diag2: [2, 4, 6]
+  #   }
+  # end
 
   def opposite(i)
     case i
@@ -209,4 +193,6 @@ class Board
     # only called when all four corners are empty
     rand(4) * 2
   end
+
+  
 end

@@ -94,9 +94,9 @@ require_relative 'color'
 
 # useful for testing...
 # player1 = Human.new("Player1", "X")
-player1 = Computer.new("Computer1", "X", "medium")
+player1 = Computer.new("Computer1", "X", "difficult")
 # player2 = Human.new("Player2", "0")
-player2 = Computer.new("Computer2", "0", "difficult")
+player2 = Computer.new("Computer2", "0", "medium")
 
 board = Board.new(player1, player2)
 puts
