@@ -35,6 +35,19 @@ class Board
     @squares[index] = " #{player.marker} "
   end
 
+  def full?
+    if @squares.none? { |square| square == "   "}
+      display
+      puts "Stalemate!"
+      puts
+      return true
+    end
+  end
+
+  def empty?
+    @squares.all? { |square| square == "   "}
+  end
+
   def check_for_win
     update_values
     @winning_lines.each_value do |v|
@@ -45,18 +58,100 @@ class Board
         end
         display
         puts "#{@player1.name} wins!"
+        puts
         return true
       elsif v.all?(" #{@player2.marker} ")
         v.map! do |square|
           square[0] = '*'
           square[2] = '*'
         end
-        puts "#{@player2.name} wins!"
         display
+        puts "#{@player2.name} wins!"
+        puts
         return true
       end
     end
-    return false
+    false
+  end
+
+  def one_away_offense(player)
+    update_values
+    friendly_marker = (player == @player1) ? @player1.marker : @player2.marker
+    @winning_lines.each_value do |v|
+      num = 0
+      v.each do |square|
+        num += 1 if square == " #{friendly_marker} "
+      end
+      if num == 2
+        empty_square = v.find_index { |square| square == "   "}
+        if empty_square
+          target_index = @squares.find_index { |square| v[empty_square].equal?(square) }
+          return target_index
+        end
+      end
+    end
+    -1
+  end
+
+  def one_away_defense(player)
+    update_values
+    opposing_marker = (player == @player1) ? @player2.marker : @player1.marker
+    @winning_lines.each_value do |v|
+      num = 0
+      v.each do |square|
+        num += 1 if square == " #{opposing_marker} "
+      end
+      if num == 2
+        empty_square = v.find_index { |square| square == "   "}
+        if empty_square
+          target_index = @squares.find_index { |square| v[empty_square].equal?(square) }
+          return target_index
+        end
+      end
+    end
+    -1
+  end
+
+  def best_squares(player)
+    update_values
+    friendly_marker = (player == @player1) ? @player1.marker : @player2.marker
+    opposing_marker = (player == @player1) ? @player2.marker : @player1.marker
+    corners = [0, 2, 6, 8]
+    return 4 if empty? || (@squares[4] == "   " && (
+      corners.all? { |corner| @squares[corner] == "   "} ||
+      (corners.count { |corner| @squares[corner] == " #{opposing_marker} "} <= 1) &&
+      corners.count { |corner| @squares[corner] == " #{friendly_marker} "} == 1))
+    corners.each do |i|
+      if @squares[i] == " #{opposing_marker} " && @squares[opposite(i)] == "   "
+        return opposite(i)
+      end
+    end
+    if corners.all? { |corner| @squares[corner] == "   " }
+      corners.each do |i|
+        if @squares[adjacent(i)[0]] == " #{opposing_marker} " &&
+          @squares[adjacent(i)[1]] == " #{opposing_marker} "
+          return i
+        end
+      end
+    end
+    @winning_lines.each_value do |v|
+      if v[0] == " #{friendly_marker} " &&
+        v[1] == "   " &&
+        v[2] == "   "
+        target_square = v[2]
+        target_index = @squares.find_index { |square| square.equal?(target_square)}
+        return target_index
+      elsif v[0] == "   " &&
+        v[1] == "   " &&
+        v[2] == " #{friendly_marker} "
+        target_square = v[0]
+        target_index = @squares.find_index { |square| square.equal?(target_square)}
+        return target_index
+      end
+    end
+    empty_corner = corners.find { |i| @squares[i] == "   "}
+    return empty_corner if empty_corner
+    -1
   end
 
   private
@@ -72,6 +167,32 @@ class Board
       diag1: [@squares[0], @squares[4], @squares[8]],
       diag2: [@squares[2], @squares[4], @squares[6]]
     }
+  end
+
+  def opposite(i)
+    case i
+    when 0
+      8
+    when 8
+      0
+    when 2
+      6
+    when 6
+      2
+    end
+  end
+
+  def adjacent(i)
+    case i
+    when 0
+      [1, 3]
+    when 6
+      [3, 7]
+    when 2
+      [1, 5]
+    when 8
+      [5, 7]
+    end
   end
 
 end
