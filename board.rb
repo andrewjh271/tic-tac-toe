@@ -52,18 +52,18 @@ class Board
     update_values
     @winning_lines.each_value do |v|
       if v.all?(" #{@player1.marker} ")
-        v.map! do |square|
-          square[0] = '*'
-          square[2] = '*'
+        v.each do |cell|
+          target_square = @squares.find_index { |square| square.equal?(cell) }
+          @squares[target_square] = "*#{@player1.marker}*".cyan
         end
         display
         puts "#{@player1.name} wins!"
         puts
         return true
       elsif v.all?(" #{@player2.marker} ")
-        v.map! do |square|
-          square[0] = '*'
-          square[2] = '*'
+        v.each do |cell|
+          target_square = @squares.find_index { |square| square.equal?(cell) }
+          @squares[target_square] = "*#{@player2.marker}*".red
         end
         display
         puts "#{@player2.name} wins!"
@@ -117,13 +117,14 @@ class Board
     friendly_marker = (player == @player1) ? @player1.marker : @player2.marker
     opposing_marker = (player == @player1) ? @player2.marker : @player1.marker
     corners = [0, 2, 6, 8]
-    return 4 if empty? || (@squares[4] == "   " && (
-      corners.all? { |corner| @squares[corner] == "   "} ||
-      (corners.count { |corner| @squares[corner] == " #{opposing_marker} "} <= 1) &&
-      corners.count { |corner| @squares[corner] == " #{friendly_marker} "} == 1))
+    return 4 if empty? || @squares[4] == "   "
     corners.each do |i|
       if @squares[i] == " #{opposing_marker} " && @squares[opposite(i)] == "   "
         return opposite(i)
+      elsif @squares[i] == " #{opposing_marker} " && 
+        @squares[opposite(i)] == " #{opposing_marker} " &&
+        @squares.count { |square| square != "   " } == 3
+        return find_empty_side 
       end
     end
     if corners.all? { |corner| @squares[corner] == "   " }
@@ -139,17 +140,17 @@ class Board
         v[1] == "   " &&
         v[2] == "   "
         target_square = v[2]
-        target_index = @squares.find_index { |square| square.equal?(target_square)}
+        target_index = @squares.find_index { |square| square.equal?(target_square) }
         return target_index
       elsif v[0] == "   " &&
         v[1] == "   " &&
         v[2] == " #{friendly_marker} "
         target_square = v[0]
-        target_index = @squares.find_index { |square| square.equal?(target_square)}
+        target_index = @squares.find_index { |square| square.equal?(target_square) }
         return target_index
       end
     end
-    empty_corner = corners.find { |i| @squares[i] == "   "}
+    empty_corner = corners.find { |i| @squares[i] == "   " }
     return empty_corner if empty_corner
     -1
   end
@@ -195,4 +196,8 @@ class Board
     end
   end
 
+  def find_empty_side
+    # only called when all four sides are empty
+    rand(4) * 2 + 1
+  end
 end
