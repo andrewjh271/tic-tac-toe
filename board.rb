@@ -117,6 +117,7 @@ class Board
     friendly_marker = (player == @player1) ? @player1.marker : @player2.marker
     opposing_marker = (player == @player1) ? @player2.marker : @player1.marker
     corners = [0, 2, 6, 8]
+    return find_empty_corner if empty? && rand < 0.5
     return 4 if empty? || @squares[4] == "   "
     corners.each do |i|
       if @squares[i] == " #{opposing_marker} " && @squares[opposite(i)] == "   "
@@ -125,6 +126,9 @@ class Board
         @squares[opposite(i)] == " #{opposing_marker} " &&
         @squares.count { |square| square != "   " } == 3
         return find_empty_side 
+      elsif @squares[i] == " #{friendly_marker} " &&
+        @squares[opposite(i)] == "   "
+        return opposite(i)
       end
     end
     if corners.all? { |corner| @squares[corner] == "   " }
@@ -199,5 +203,10 @@ class Board
   def find_empty_side
     # only called when all four sides are empty
     rand(4) * 2 + 1
+  end
+
+  def find_empty_corner
+    # only called when all four corners are empty
+    rand(4) * 2
   end
 end
