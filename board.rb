@@ -44,6 +44,7 @@ class Board
   def mark(player, index)
     return false unless @squares[index] == " "
     @squares[index] = player.marker
+    randomize_winning_lines
   end
 
   def full?
@@ -144,20 +145,6 @@ class Board
 
   private
 
-  # def update_values
-  #   @winning_lines = {
-  #     # indexes for @square
-  #     row1: [0, 1, 2],
-  #     row2: [3, 4, 5],
-  #     row3: [6, 7, 8],
-  #     columnA: [0, 3, 6],
-  #     columnB: [1, 4, 7],
-  #     columnC: [2, 5, 8],
-  #     diag1: [0, 4, 8],
-  #     diag2: [2, 4, 6]
-  #   }
-  # end
-
   def opposite(i)
     case i
     when 0
@@ -194,5 +181,11 @@ class Board
     rand(4) * 2
   end
 
-  
+  def randomize_winning_lines
+    # changes order of @winning_lines hash so iterators will check values in a different order
+    temp = @winning_lines.to_a
+    temp = temp.sample(temp.length)
+    @winning_lines = temp.to_h
+  end
+
 end
