@@ -1,6 +1,8 @@
 # Tic Tac Toe
 
-Created as part of The Odin Project curriculum. [Repo](https://github.com/andrewjh271/tic_tac_toe)
+Created as part of The Odin Project curriculum. 
+
+View in [repl.it](https://repl.it/@andrewjh271/tictactoe)
 
 ### Functionality
 
