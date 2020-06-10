@@ -48,16 +48,17 @@ class Board
   end
 
   def full?
-    if @squares.none? { |square| square == " "}
+    if @squares.none? { |square| square == " " }
       display
       puts "Stalemate!"
       puts
       return true
     end
+    false
   end
 
   def empty?
-    @squares.all? { |square| square == " "}
+    @squares.all? { |square| square == " " }
   end
 
   def check_for_win
