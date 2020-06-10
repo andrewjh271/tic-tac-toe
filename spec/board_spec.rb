@@ -5,8 +5,11 @@ require './lib/color.rb'
 describe Board do
 
   player1 = Human.new("Player1", "X")
-  player2 = Computer.new("Computer1", "X", "difficult")
+  player2 = Computer.new("Computer1", "0", "difficult")
   subject { board = Board.new(player1, player2) }
+  before do
+    allow($stdout).to receive(:write)
+  end
 
   describe '#empty?' do
     it 'returns true if board is empty' do
@@ -89,7 +92,7 @@ describe Board do
       subject.mark(player1, 0)
       subject.mark(player2, 4)
       subject.mark(player1, 8)
-      expect(subject.best_squares(player2)).to eq(3) | eq(7) | eq(5) | eq(2)
+      expect(subject.best_squares(player2)).to eq(3) | eq(7) | eq(5) | eq(1)
     end
     it 'otherwise returns square opposite self' do
       subject.mark(player2, 2)
