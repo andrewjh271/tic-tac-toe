@@ -4,6 +4,8 @@ Created as part of The Odin Project curriculum.
 
 View in [repl.it](https://repl.it/@andrewjh271/tictactoe)
 
+*Update:* Added rspec tests.
+
 ### Functionality
 
 Board uses chess-style coordinates for squares. The board checks for a win after every move, and highlights the winning line in color if a player has won. The board also checks for a stalemate in the case of a full board.
