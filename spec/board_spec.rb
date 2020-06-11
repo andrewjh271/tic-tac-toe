@@ -6,15 +6,12 @@ describe Board do
 
   player1 = Human.new("Player1", "X")
   player2 = Computer.new("Computer1", "0", "difficult")
-  subject { board = Board.new(player1, player2) }
-  before do
-    allow($stdout).to receive(:write)
-  end
+  subject { Board.new(player1, player2) }
+
+  before { allow($stdout).to receive(:write) }
 
   describe '#empty?' do
-    it 'returns true if board is empty' do
-      expect(subject).to be_empty
-    end
+    it { expect(subject).to be_empty }
     it 'returns false if board is not empty' do
       subject.mark(player1, 4)
       expect(subject).not_to be_empty
@@ -29,6 +26,16 @@ describe Board do
     it 'returns false if board is not full' do
       8.times { player2.move(subject) }
       expect(subject).not_to be_empty
+    end
+  end
+
+  describe '#mark' do
+    it 'returns false if square is occupied' do
+      subject.mark(player1, 6)
+      expect(subject.mark(player2, 6)).to eq(false)
+    end
+    it 'returns truthy value if square is not occupied' do
+      expect(subject.mark(player2, 6)).not_to eq(false)
     end
   end
 
